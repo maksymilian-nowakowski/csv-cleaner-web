@@ -1,0 +1,4 @@
+output/*
+output/.gitignore
+uploads/*
+uploads/.gitignore   
