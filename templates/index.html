@@ -10,5 +10,15 @@
         <input type="file" name="file">
         <button type="submit">Upload</button>
     </form>
+    {% if summary %}
+    <h2>Summary</h2>
+    <ul>
+        <li>Valid rows: {{ summary.rows }}</li>
+        <li>Rows removed: {{ removed }}</li>
+        <li>Average score: {{ summary.average }}</li>
+        <li>Highest score: {{ summary.max }}</li>
+        <li>Lowest score: {{ summary.min }}</li>
+    </ul>
+    {% endif %}
 </body>
 </html>
