@@ -19,6 +19,14 @@
         <li>Highest score: {{ summary.max }}</li>
         <li>Lowest score: {{ summary.min }}</li>
     </ul>
+    {% endif %} 
+    {% if download_ready %}
+    <a href="/download">
+        <button>Download Cleaned CSV</button>
+    </a>
+    {% endif %}
+    {% if error %}
+    <p style="color:red;">Error: {{ error }}</p>
     {% endif %}
 </body>
 </html>

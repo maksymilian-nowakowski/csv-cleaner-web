@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 
 UPLOAD_FOLDER = "uploads"
 OUTPUT_FOLDER = "output"
@@ -49,23 +49,35 @@ def calculate_summary(rows):
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
-        file = request.files["file"]
-        file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
-        file.save(file_path)
+        try:
+            file = request.files["file"]
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+            file.save(file_path)
 
-        data = load_data(file_path)
-        clean_rows, removed = clean_data(data)
-        summary = calculate_summary(clean_rows)
+            data = load_data(file_path)
+            clean_rows, removed = clean_data(data)
+            summary = calculate_summary(clean_rows)
 
-        save_data(clean_rows, os.path.join(OUTPUT_FOLDER, "cleaned_output.csv"))
+            output_path = os.path.join(OUTPUT_FOLDER, "cleaned_output.csv")
+            save_data(clean_rows, output_path)
 
-        return render_template(
-            "index.html",
-            summary=summary,
-            removed=removed
-        )
+            return render_template(
+                "index.html",
+                summary=summary,
+                removed=removed,
+                download_ready=True
+            )
+        except Exception as e:
+            return render_template("index.html", error=str(e))
 
     return render_template("index.html")
+
+@app.route("/download")
+def download():
+    return send_file(
+        os.path.join(OUTPUT_FOLDER, "cleaned_output.csv"),
+        as_attachment=True
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
